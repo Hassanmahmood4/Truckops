@@ -1,0 +1,17 @@
+{
+  "name": "fleetflow",
+  "private": true,
+  "description": "FleetFlow — run API + Next app together",
+  "scripts": {
+    "postinstall": "node -e \"const fs=require('fs');try{if(!fs.existsSync('.env'))fs.copyFileSync('.env.example','.env')}catch(e){}\"",
+    "dev": "concurrently -k -n api,web -c blue,magenta \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
+    "dev:landing": "npm run dev --prefix landing",
+    "dev:api": "npm run dev --prefix server",
+    "dev:web": "npm run dev --prefix client",
+    "build": "npm run build --prefix client",
+    "build:landing": "npm run build --prefix landing"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
