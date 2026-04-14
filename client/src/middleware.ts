@@ -5,9 +5,9 @@ const isProtectedRoute = createRouteMatcher(['/dashboard(.*)'])
 /**
  * Only `/dashboard` requires a session.
  *
- * Important: the middleware `matcher` must NOT include `/`. Otherwise Clerk runs
- * `authenticateRequest` on the landing page and may issue a `Location` redirect to
- * the sign-in / accounts flow before the route handler runs.
+ * Important: the matcher must NOT include `/` (landing). Otherwise Clerk may redirect before the page runs.
+ *
+ * Include `/api/*` so `auth()` works in Route Handlers (Clerk requires clerkMiddleware on the same request).
  */
 export default clerkMiddleware(async (auth, req) => {
   if (isProtectedRoute(req)) {
@@ -20,5 +20,6 @@ export const config = {
     '/dashboard/:path*',
     '/sign-in/:path*',
     '/sign-up/:path*',
+    '/api/:path*',
   ],
 }
