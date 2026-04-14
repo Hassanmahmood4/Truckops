@@ -2,5 +2,5 @@
 export const QUOTE_RATE_PER_UNIT = Number(process.env.QUOTE_RATE_PER_UNIT) || 2.5;
 
 export const DRIVER_STATUSES = ['available', 'busy'];
-export const LOAD_STATUSES = ['pending', 'assigned', 'delivered'];
+export const LOAD_STATUSES = ['pending', 'assigned', 'in_transit', 'delivered'];
 export const ASSIGNMENT_STATUSES = ['active', 'completed', 'cancelled'];
