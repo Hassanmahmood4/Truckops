@@ -9,6 +9,7 @@ import { MarketingNavbar } from '@/components/marketing/navbar'
 /** Public marketing landing — no auth required. */
 export default function HomePage() {
   return (
+    // Page transition is automatically applied globally via app/layout.tsx.
     <div className="flex min-h-screen flex-col bg-white text-black dark:bg-black dark:text-white">
       <MarketingNavbar />
       <main className="flex flex-1 flex-col">
