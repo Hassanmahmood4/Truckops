@@ -12,7 +12,7 @@ export function ThemeToggle() {
   }, [])
 
   if (!mounted) {
-    return <span className="h-9 w-9 rounded-lg border border-gray-200 dark:border-gray-800" aria-hidden />
+    return <span className="inline-flex h-6 w-10 rounded-full bg-gray-200 dark:bg-gray-800" aria-hidden />
   }
 
   const isDark = resolvedTheme === 'dark'
@@ -21,11 +21,14 @@ export function ThemeToggle() {
     <button
       type="button"
       onClick={() => setTheme(isDark ? 'light' : 'dark')}
-      className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-xs font-medium text-black transition-all hover:bg-gray-100 dark:border-gray-800 dark:bg-black dark:text-white dark:hover:bg-gray-900"
-      aria-label="Toggle theme"
-      title="Toggle theme"
+      className="inline-flex h-6 w-10 items-center rounded-full bg-gray-200 p-1 transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-black dark:bg-gray-800 dark:focus-visible:ring-white"
+      aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
     >
-      {isDark ? 'L' : 'D'}
+      <span
+        className={`h-4 w-4 rounded-full bg-white transition-all duration-200 dark:bg-black ${
+          isDark ? 'translate-x-4' : 'translate-x-0'
+        }`}
+      />
     </button>
   )
 }
