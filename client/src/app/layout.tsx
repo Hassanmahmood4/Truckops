@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { ClerkProvider } from '@clerk/nextjs'
 
 import { InitialLoaderGate } from '@/components/initial-loader-gate'
+import { PageTransition } from '@/components/PageTransition'
 import { ThemeProvider } from '@/components/theme-provider'
 import './globals.css'
 
@@ -20,7 +21,9 @@ export default function RootLayout({
       <body>
         <ClerkProvider afterSignOutUrl="/">
           <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
-            <InitialLoaderGate>{children}</InitialLoaderGate>
+            <InitialLoaderGate>
+              <PageTransition>{children}</PageTransition>
+            </InitialLoaderGate>
           </ThemeProvider>
         </ClerkProvider>
       </body>
