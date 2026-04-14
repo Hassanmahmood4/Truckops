@@ -1,4 +1,4 @@
--- FleetFlow — run in Supabase SQL editor or via migration tooling
+-- TruckOps / FleetFlow — run in Supabase SQL editor
 
 -- Drivers
 CREATE TABLE IF NOT EXISTS drivers (
@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS loads (
   pickup_location TEXT NOT NULL,
   dropoff_location TEXT NOT NULL,
   weight NUMERIC,
-  status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'assigned', 'delivered')),
+  status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'assigned', 'in_transit', 'delivered')),
   user_id TEXT
 );
 
@@ -35,7 +35,23 @@ CREATE TABLE IF NOT EXISTS quotes (
   distance NUMERIC NOT NULL
 );
 
+-- Load requests (user submits; admin approves/rejects)
+CREATE TABLE IF NOT EXISTS requests (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id TEXT NOT NULL,
+  pickup_location TEXT NOT NULL,
+  dropoff_location TEXT NOT NULL,
+  weight NUMERIC,
+  notes TEXT,
+  status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected')),
+  load_id UUID REFERENCES loads(id) ON DELETE SET NULL,
+  reviewed_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
 CREATE INDEX IF NOT EXISTS idx_loads_user_id ON loads(user_id);
 CREATE INDEX IF NOT EXISTS idx_assignments_driver_id ON assignments(driver_id);
 CREATE INDEX IF NOT EXISTS idx_assignments_load_id ON assignments(load_id);
 CREATE INDEX IF NOT EXISTS idx_quotes_load_id ON quotes(load_id);
+CREATE INDEX IF NOT EXISTS idx_requests_user_id ON requests(user_id);
+CREATE INDEX IF NOT EXISTS idx_requests_status ON requests(status);
