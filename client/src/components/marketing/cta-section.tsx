@@ -4,8 +4,8 @@ import { Button } from '@/components/ui/button'
 
 export function MarketingCtaSection() {
   return (
-    <section id="cta" className="border-b border-gray-200 bg-gray-50/50 px-6 py-24 dark:border-gray-800 dark:bg-black">
-      <div className="mx-auto max-w-6xl text-center">
+    <section id="cta" className="bg-gray-50/50 py-24 dark:bg-black">
+      <div className="mx-auto max-w-6xl px-6 text-center">
         <h2 className="text-3xl font-semibold tracking-tight text-black md:text-4xl lg:text-[2.5rem] dark:text-white">
           Ready to run dispatch with confidence?
         </h2>
