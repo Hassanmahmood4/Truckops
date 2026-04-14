@@ -34,8 +34,8 @@ const plans = [
 
 export function Pricing() {
   return (
-    <section id="pricing" className="border-b border-gray-200 bg-white px-6 py-24 dark:border-gray-800 dark:bg-black">
-      <div className="mx-auto max-w-6xl">
+    <section id="pricing" className="bg-white py-24 dark:bg-black">
+      <div className="mx-auto max-w-6xl px-6">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="text-4xl font-semibold tracking-tight text-black md:text-5xl dark:text-white">
             Simple, Transparent Pricing
