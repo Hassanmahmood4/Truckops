@@ -25,24 +25,11 @@ function loadEnvFiles() {
 
 loadEnvFiles()
 
-const backendUrl = process.env.API_URL ?? 'http://localhost:3001'
-
 const nextConfig: NextConfig = {
   /**
-   * When NEXT_PUBLIC_API_URL is unset, browser calls use relative `/api/*` and Next proxies to the Express server.
-   * Set NEXT_PUBLIC_API_URL to your API origin in production if you prefer absolute URLs.
+   * Fleet API is implemented as Next.js Route Handlers under `src/app/api/*` (Supabase + Clerk).
+   * To use the legacy Express server instead, set `NEXT_PUBLIC_API_URL` to that origin and add rewrites here.
    */
-  async rewrites() {
-    if (process.env.NEXT_PUBLIC_API_URL) {
-      return []
-    }
-    return [
-      {
-        source: '/api/:path*',
-        destination: `${backendUrl}/api/:path*`,
-      },
-    ]
-  },
 }
 
 export default nextConfig
