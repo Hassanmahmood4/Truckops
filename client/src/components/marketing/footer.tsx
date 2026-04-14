@@ -2,8 +2,8 @@ import Link from 'next/link'
 
 export function MarketingFooter() {
   return (
-    <footer className="border-t border-gray-200 bg-white px-6 py-12 dark:border-gray-800 dark:bg-black">
-      <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-8 md:flex-row md:items-center">
+    <footer className="bg-white py-20 dark:bg-black">
+      <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-8 px-6 md:flex-row md:items-center">
         <div>
           <p className="text-sm font-semibold tracking-tight text-black dark:text-white">FleetFlow</p>
           <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Truck dispatch management.</p>
