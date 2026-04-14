@@ -1,92 +1,57 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { Package, Truck, Waypoints } from 'lucide-react'
+import { useCallback, useEffect, useState } from 'react'
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { StatsCard } from '@/components/StatsCard'
 import { useFleetApi } from '@/hooks/useFleetApi'
-import type { Assignment, Driver, Load } from '@/types/fleet'
+import type { DashboardStats } from '@/types/fleet'
 
 export default function DashboardPage() {
   const api = useFleetApi()
-  const [drivers, setDrivers] = useState<Driver[]>([])
-  const [loads, setLoads] = useState<Load[]>([])
-  const [assignments, setAssignments] = useState<Assignment[]>([])
+  const [stats, setStats] = useState<DashboardStats | null>(null)
   const [error, setError] = useState<string | null>(null)
+
+  const load = useCallback(async () => {
+    const data = await api.get<DashboardStats>('/api/stats')
+    setStats(data)
+  }, [api])
 
   useEffect(() => {
     let cancelled = false
-    async function load() {
+    async function run() {
       try {
         setError(null)
-        const [d, l, a] = await Promise.all([
-          api.get<Driver[]>('/api/drivers'),
-          api.get<Load[]>('/api/loads'),
-          api.get<Assignment[]>('/api/assignments'),
-        ])
-        if (!cancelled) {
-          setDrivers(d)
-          setLoads(l)
-          setAssignments(a)
-        }
+        await load()
       } catch (e) {
         if (!cancelled) setError(e instanceof Error ? e.message : 'Failed to load dashboard')
       }
     }
-    void load()
+    void run()
     return () => {
       cancelled = true
     }
-  }, [api])
-
-  const availableDrivers = drivers.filter((x) => x.status === 'available').length
-  const pendingLoads = loads.filter((x) => x.status === 'pending').length
-  const activeAssignments = assignments.filter((x) => x.status === 'active').length
+  }, [load])
 
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-neutral-950">Overview</h1>
-        <p className="mt-1 text-sm leading-relaxed text-neutral-500">Operational snapshot for your fleet.</p>
+        <h1 className="text-2xl font-semibold tracking-tight text-neutral-950 dark:text-white">Overview</h1>
+        <p className="mt-1 text-sm leading-relaxed text-neutral-500 dark:text-neutral-400">
+          Operational snapshot for your fleet.
+        </p>
       </div>
 
       {error ? (
-        <div className="rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-sm text-neutral-800">
+        <div className="rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-sm text-neutral-800 dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-200">
           {error}
         </div>
       ) : null}
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-neutral-600">Available drivers</CardTitle>
-            <Truck className="size-4 text-neutral-400" strokeWidth={1.75} />
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-semibold tabular-nums tracking-tight text-neutral-950">{availableDrivers}</div>
-            <CardDescription>of {drivers.length} total</CardDescription>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-neutral-600">Pending loads</CardTitle>
-            <Package className="size-4 text-neutral-400" strokeWidth={1.75} />
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-semibold tabular-nums tracking-tight text-neutral-950">{pendingLoads}</div>
-            <CardDescription>awaiting assignment</CardDescription>
-          </CardContent>
-        </Card>
-        <Card className="sm:col-span-2 lg:col-span-1">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-neutral-600">Active assignments</CardTitle>
-            <Waypoints className="size-4 text-neutral-400" strokeWidth={1.75} />
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-semibold tabular-nums tracking-tight text-neutral-950">{activeAssignments}</div>
-            <CardDescription>in progress</CardDescription>
-          </CardContent>
-        </Card>
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <StatsCard title="Total drivers" value={stats ? String(stats.totalDrivers) : '—'} />
+        <StatsCard title="Active loads" value={stats ? String(stats.activeLoads) : '—'} description="Pending, assigned, or in transit" />
+        <StatsCard title="Completed deliveries" value={stats ? String(stats.completedDeliveries) : '—'} />
+        <StatsCard title="Pending requests" value={stats ? String(stats.pendingRequests) : '—'} description="Awaiting review" />
       </div>
     </div>
   )
